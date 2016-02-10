@@ -213,26 +213,34 @@ class Artist(models.Model):
             Release.TYPE_OFFICIAL))
         query = Query()
         releases = query.getReleases(filter)
-         for release in releases:
+         for release in releases
+         {
             album = release.release
             # Only import albums with an Amazon ASIN.
-            if album.asin:
+            if album.asin
+            {
                 # First try and find an already-existing album with this ASIN
                 # As an ASIN is unique it means it will find it even if the fields
                 # have been changed since creation.
-                try:
+                try
+                {
                     db_album = Album.objects.get(asin=album.asin)
-                except Album.DoesNotExist:
+                }
+                except Album.DoesNotExist{
+                    
                     db_album = Album(artist=self, title=album.title,
                         asin=album.asin, mbid=album.id.rsplit("/", 1)[1])
                     # Look for all countries, Britan first, then the world wide release
                     # date (XE) or the US release date.
                     release_dates = dict((r.country, r.date)
                         for r in album.releaseEvents)
-                    if release_dates:
+                    if release_dates
+                    {
                         # GB = United Kingdom, XE = world, US = United States.
-                        for country in ('GB', 'XE', 'US'):
-                            if release_dates.has_key(country):
+                        for country in ('GB', 'XE', 'US')
+                        {
+                            if release_dates.has_key(country)
+                            {
                                 db_album.released_in = country
                                 # The release date can be in the format "2010",
                                 # "2010-02", or "2010-02-18", so make up the
@@ -246,6 +254,9 @@ class Artist(models.Model):
                                 except ValueError:
                                     pass  # Date couldn't be parsed.
                                 break
+                            }
+                        }
+                    }
                     db_album.save()
 
     def get_photo(self):
