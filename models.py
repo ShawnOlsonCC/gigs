@@ -213,23 +213,19 @@ class Artist(models.Model):
             Release.TYPE_OFFICIAL))
         query = Query()
         releases = query.getReleases(filter)
-        for release in releases:
+         for release in releases:
             album = release.release
-            # Only import albums with an Amazon ASIN.  That allows for some
-            # quality-control as Music Brainz lists every B-side and bonus
-            # material you can think of.
+            # Only import albums with an Amazon ASIN.
             if album.asin:
                 # First try and find an already-existing album with this ASIN
-                # As an ASIN is unique it means we'll find it even if the fields
+                # As an ASIN is unique it means it will find it even if the fields
                 # have been changed since creation.
                 try:
                     db_album = Album.objects.get(asin=album.asin)
                 except Album.DoesNotExist:
                     db_album = Album(artist=self, title=album.title,
                         asin=album.asin, mbid=album.id.rsplit("/", 1)[1])
-                    # MusicBrainz stores releases dates for as many countries as
-                    # it can.  I'm only interested in Britain though, so look
-                    # for that first.  As a fallback, us the world wide release
+                    # Look for all countries, Britan first, then the world wide release
                     # date (XE) or the US release date.
                     release_dates = dict((r.country, r.date)
                         for r in album.releaseEvents)
